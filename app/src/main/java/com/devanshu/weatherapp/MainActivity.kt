@@ -149,12 +149,17 @@ class MainActivity : AppCompatActivity() {
                 latitude, longitude, Constants.METRIC_UNIT, Constants.APP_ID
             )
 
+            showCustomProgressDialog()
+
             listCall.enqueue(object : Callback<WeatherResponse>{
                 override fun onResponse(
                     call: Call<WeatherResponse>,
                     response: Response<WeatherResponse>
                 ) {
                     if (response.isSuccessful){
+
+                        hideProgressDialog()
+
                         val weatherList: WeatherResponse? = response.body()
                         Log.i("Response Result", "$weatherList")
                     } else{
@@ -173,6 +178,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
+                    hideProgressDialog()
                     Log.e("Errorrrrr", t.message.toString())
                 }
 
@@ -181,6 +187,17 @@ class MainActivity : AppCompatActivity() {
         }else{
             Toast.makeText(this, "Internet not available", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun showCustomProgressDialog(){
+        mProgressDialog = Dialog(this)
+        mProgressDialog!!.setContentView(R.layout.dialog_custom_dialog)
+        mProgressDialog!!.show()
+    }
+
+    private fun hideProgressDialog(){
+        if (mProgressDialog != null)
+            mProgressDialog!!.dismiss()
     }
 
 
